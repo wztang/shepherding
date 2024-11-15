@@ -432,6 +432,94 @@
 				"role" : "libraries"
 			},
 			{
+				"fragment" : "-llua5.3",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lm",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-ldl",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lpthread",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lfreeimage",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lfreeimageplus",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lGL",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lGLU",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lglut",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lXmu",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lXi",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-llua5.3",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lm",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-ldl",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lpthread",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lfreeimage",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lfreeimageplus",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lGL",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lGLU",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lglut",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lXmu",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lXi",
+				"role" : "libraries"
+			},
+			{
 				"backtrace" : 1,
 				"fragment" : "/usr/lib/x86_64-linux-gnu/libQt5Widgets.so.5.12.8",
 				"role" : "libraries"
