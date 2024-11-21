@@ -1,0 +1,1 @@
+合成视频：ffmpeg -framerate 30 -i frame_%10d.png -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" -c:v libx264 -r 30 -pix_fmt yuv420p output.mp4

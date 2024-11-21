@@ -27,13 +27,33 @@
         <positioning implementation="default" />
         <epuck_ground implementation="rot_z_only" />
         <epuck_proximity implementation="default" show_rays="false" />
-        <epuck_range_and_bearing implementation="medium" medium="rab" show_rays="true"/>
+        <epuck_range_and_bearing implementation="medium" medium="rab" show_rays="false"/>
         <differential_steering implementation="default"/>
       </sensors>
       <!-- No required configuration -->
       
       <!-- Optionally, you can pass a script as a controller parameter: -->
       <params script="${CON1}"
+      timeRate="1" />
+    </python_controller>
+    <python_controller id="budong" library="${ARGOSFOLDER}/build/libpy_controller_interface.so">
+      <!-- Normal actuator/sensor configuration follows -->
+      <actuators>
+        <epuck_rgb_leds implementation="default" medium="leds" />
+        <epuck_wheels implementation="default" noise_std_dev="0"/>
+        <epuck_range_and_bearing implementation="medium" range="${RABRANGE}"/>
+      </actuators>
+      <sensors>
+        <positioning implementation="default" />
+        <epuck_ground implementation="rot_z_only" />
+        <epuck_proximity implementation="default" show_rays="false" />
+        <epuck_range_and_bearing implementation="medium" medium="rab" show_rays="false"/>
+        <differential_steering implementation="default"/>
+      </sensors>
+      <!-- No required configuration -->
+      
+      <!-- Optionally, you can pass a script as a controller parameter: -->
+      <params script="${CON3}"
       timeRate="1" />
     </python_controller>
 
@@ -70,19 +90,50 @@
 
  <floor id="f" source="image" path="${EXPERIMENTFOLDER}/experiments/floors/white.png" />
 
-    <box id="wall_north" size="${ARENADIM},0.06,0.1" movable="false">
+    <box id="wall_north" size="${ARENADIM},0.01,0.1" movable="false">
       <body position="${MOVEWALL},${ARENADIMH},0" orientation="0,0,0" />
     </box>
-    <box id="wall_south" size="${ARENADIM},0.06,0.1" movable="false">
+    <box id="wall_south" size="${ARENADIM},0.01,0.1" movable="false">
       <body position="${MOVEWALL},-${ARENADIMH},0" orientation="0,0,0" />
     </box>
-    <box id="wall_east" size="0.06,${ARENADIM},0.1" movable="false">
+    <box id="wall_east" size="0.01,${ARENADIM},0.1" movable="false">
       <body position="${ARENADIMH},${MOVEWALL},0" orientation="0,0,0" />
     </box>
-    <box id="wall_west" size="0.06,${ARENADIM},0.1" movable="false">
+    <box id="wall_west" size="0.01,${ARENADIM},0.1" movable="false">
       <body position="-${ARENADIMH},${MOVEWALL},0" orientation="0,0,0" />
     </box>
 
+    <!-- <box id="wall_north1" size="${WALLIN_LENGTH},0.01,0.1" movable="false">
+      <body position="${MOVEWALL},${WALLIN_POSITION},0" orientation="0,0,0" />
+    </box>
+    <box id="wall_south1" size="${WALLIN_LENGTH},0.01,0.1" movable="false">
+      <body position="${MOVEWALL},-${WALLIN_POSITION},0" orientation="0,0,0" />
+    </box>
+    <box id="wall_east1" size="0.01,${WALLIN_LENGTH},0.1" movable="false">
+      <body position="${WALLIN_POSITION},${MOVEWALL},0" orientation="0,0,0" />
+    </box>
+    <box id="wall_west1" size="0.01,${WALLIN_LENGTH},0.1" movable="false">
+      <body position="-${WALLIN_POSITION},${MOVEWALL},0" orientation="0,0,0" />
+    </box> -->
+
+    <distribute>
+      <position method="grid" center="0.0, 0.0, 0" distances="0.08, 1.6, 0" layout="20,2,1" /> 
+      <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" /> 
+      <entity quantity="40" max_trials="15"> 
+        <e-puck id="w1" >
+          <controller config="budong" />
+        </e-puck>
+      </entity> 
+    </distribute>
+    <distribute>
+      <position method="grid" center="0.0, 0.0, 0.0" distances="1.6, 0.08, 0" layout="2,19,1" /> 
+      <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" /> 
+      <entity quantity="38" max_trials="15"> 
+        <e-puck id="w2" >
+          <controller config="budong" />
+        </e-puck>
+      </entity> 
+    </distribute>
     <distribute>
       <position method="uniform" min="-${STARTDIM},-${STARTDIM},0" max="${STARTDIM},${STARTDIM},0" /> 
       <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" /> 
@@ -118,7 +169,7 @@
     <!-- * To activate the Lua editor, just use the 'lua_editor' flag attribute * -->
     <!-- ************************************************************************ -->
   <!-- <qt-opengl autoplay="true"> -->
-    <qt-opengl autoplay="true">
+    <qt-opengl autoplay="false">
 <!--       <user_functions library="${ARGOSFOLDER}/build/libpy_qtuser_function_interface.so"
                       label="py_qtuser_function" >
       <params script="${EXPERIMENTFOLDER}/loop_functions/qtuser_function.py"/>

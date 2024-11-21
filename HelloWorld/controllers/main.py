@@ -181,14 +181,17 @@ def find_nearest_peer(robot_position, erb_peers):
 def compute_total_force_and_movement(robot, robot_position, erb_peers):
     # Control parameters for movement
 
-    V_0 = 10
+    dt = 0.001
+    V_0 = 10 # cm/s
     robot_width = 0.07
     total_F_x = 0
     total_F_y = 0
-    K_ij = 5000  # Assuming some constant value for K_ij
-    L_ij = 0.2  # Assuming some constant value for L_ij (equilibrium distance)
-    alpha = V_0 / K_ij
-    beta = alpha * 60
+    K_ij = 5  # Assuming some constant value for K_ij
+    L_ij = 0.10 # m # Assuming some constant value for L_ij (equilibrium distance)
+    alpha = 100
+    beta = 3000
+    
+    orientation_angle =  odo.getOrientation()  # Assuming this returns the orientation angle in degrees
 
     # Compute the total force from all peers
     for peer in erb_peers:
@@ -196,43 +199,58 @@ def compute_total_force_and_movement(robot, robot_position, erb_peers):
         if peer.range < L_ij:
             # Force contribution from this peer
             F = K_ij / L_ij * (peer.range - L_ij)
-            total_F_x +=  F * math.cos(peer.bearing * math.pi / 180)
-            total_F_y += F * math.sin(peer.bearing * math.pi / 180)
+            total_F_x +=  F * math.cos(peer.bearing + orientation_angle)
+            total_F_y += F * math.sin(peer.bearing + orientation_angle)
+
+    # robot_space_direction = math.atan2(robot_position[1], robot_position[0])
+    # robot_space_distance = math.sqrt(robot_position[0] ** 2 + robot_position[1] ** 2)
+    # if robot_space_distance > 1.0 - L_ij/2:
+    #     F = K_ij / L_ij * (robot_space_distance - 1 - L_ij/2) * 2
+    #     total_F_x = F * math.cos(robot_space_direction)
+    #     total_F_y = F * math.sin(robot_space_direction)
 
     # Calculate movement based on the total force
-    orientation_angle =  odo.getOrientation()  # Assuming this returns the orientation angle in degrees
-
-
     force_parallel = total_F_x * math.cos(orientation_angle) + total_F_y * math.sin(orientation_angle)
     force_perpendicular = -total_F_x * math.sin(orientation_angle) + total_F_y * math.cos(orientation_angle)
     
-    delta_position = (V_0 + alpha * force_parallel) * 0.00013
-    delta_angle = (beta * force_perpendicular) * 0.00013
-    # Calculate wheel speeds
-    left_wheel_speed = ((delta_position + robot_width * delta_angle / 2) * 1000 / 0.13)
-    right_wheel_speed = ((delta_position - robot_width * delta_angle / 2) * 1000 / 0.13)
+    v_t = (V_0 + alpha * force_parallel)
+    w_t = (beta * force_perpendicular)
     
+    # Calculate wheel speeds
+    left_wheel_speed = (v_t - robot_width * w_t / 2) 
+    right_wheel_speed = (v_t + robot_width * w_t / 2)
+    # print(v_t,w_t, force_parallel, force_perpendicular)
+    
+    # print("Robot position: ", robot_position[0],robot_position[1], "Orientation angle: ", orientation_angle)
+    # if me.id == "1":
+    #     left_wheel_speed = right_wheel_speed = 0
+    # else:
+    #     if len(erb_peers) > 0:
+    #         print(f"Robot:{me.id}, position:({robot_position[0]},{robot_position[1]}),direction:{orientation_angle},peer_count:{len(erb_peers)},distance:{erb_peers[0].range},bearing:{erb_peers[0].bearing},({erb_peers[0].bearing + orientation_angle},{math.cos(erb_peers[0].bearing + orientation_angle)},{math.sin(erb_peers[0].bearing + orientation_angle)}),force:({total_F_x},{total_F_y}),({force_parallel},{force_perpendicular}),speed:({left_wheel_speed},{right_wheel_speed})")
+    # robot.epuck_wheels.set_speed(left_wheel_speed, right_wheel_speed)
     # Obstacle avoidance
-    thresh_ir = 0.0
-    weights  = 50 * [-10, -10, 0, 0, 0, 0, 10, 10]
-    obstacle = False
-    avoid_left = avoid_right = 0
-    readings = robot.epuck_proximity.get_readings()
-    ir = [reading.value for reading in readings]
-    # Find Wheel Speed for Obstacle Avoidance
-    for i, reading in enumerate(ir):
-        if reading > thresh_ir:
-            obstacle = True
-            avoid_left  += weights[i] * reading
-            avoid_right -= weights[i] * reading
-    if obstacle:
-        robot.epuck_wheels.set_speed(left_wheel_speed + avoid_left / 0.13, right_wheel_speed + avoid_right / 0.13)
-        # print(ir)
-        # print(obstacle,left_wheel_speed, right_wheel_speed, avoid_left, avoid_right)
-        obstacle = False
-    else:
-        robot.epuck_wheels.set_speed(left_wheel_speed, right_wheel_speed)
-        print(obstacle,left_wheel_speed, right_wheel_speed, avoid_left, avoid_right)
+    # thresh_ir = 0.7
+    # weights  = 50 * [-10, -10, 0, 0, 0, 0, 10, 10]
+    # obstacle = False
+    # avoid_left = avoid_right = 0
+    # readings = robot.epuck_proximity.get_readings()
+    # ir = [reading.value for reading in readings]
+    # # Find Wheel Speed for Obstacle Avoidance
+    # for i, reading in enumerate(ir):
+    #     if reading > thresh_ir:
+    #         obstacle = True
+    #         avoid_left  -= weights[i] * reading
+    #         avoid_right += weights[i] * reading
+    # if obstacle:
+    #     left_wheel_speed = left_wheel_speed + avoid_left
+    #     right_wheel_speed = left_wheel_speed + avoid_right
+    #     obstacle = False
+    robot.epuck_wheels.set_speed(left_wheel_speed, right_wheel_speed)
+    # nearest_peer, min_distance = find_nearest_peer(robot_position, erb.peers)
+    # if me.id == "1":
+    #     print(f"Robot:{me.id}, position:({robot_position[0]},{robot_position[1]}),direction:{orientation_angle},peer_count:{len(erb_peers)},distance:{nearest_peer.range},bearing:{nearest_peer.bearing},nearest_distance:{min_distance}")
+    # print(f"Robot:{me.id}, position:({robot_position[0]},{robot_position[1]}),direction:{orientation_angle}")
+    # robot.epuck_wheels.set_speed(left_wheel_speed, right_wheel_speed)
     # Log and set wheel speeds
     # print(f"Robot position: {robot_position}, Orientation angle: {orientation_angle}")
     # print(f"position:({robot_position[0]},{robot_position[1]},{orientation_angle}),force:({total_F_x},{total_F_y}),speed:({V_0 + alpha * force_parallel},{beta * force_perpendicular})")
