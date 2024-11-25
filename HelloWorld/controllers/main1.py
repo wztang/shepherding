@@ -76,7 +76,7 @@ def init():
     robotID = str(int(robot.variables.get_id()[2:])+1)
     robotIP = '127.0.0.1'
     robot.variables.set_attribute("id", str(robotID))
-    robot.variables.set_attribute("byzantine_style", str(0))
+    robot.variables.set_attribute("byzantine_style", str(-1))
     robot.variables.set_attribute("consensus_reached",str("false"))
     robot.variables.set_attribute("scresources", "[]")
     robot.variables.set_attribute("foraging", "")

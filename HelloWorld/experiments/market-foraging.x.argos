@@ -116,7 +116,7 @@
       <body position="-${WALLIN_POSITION},${MOVEWALL},0" orientation="0,0,0" />
     </box> -->
 
-    <distribute>
+    <!-- <distribute>
       <position method="grid" center="0.0, 0.0, 0" distances="0.08, 1.6, 0" layout="20,2,1" /> 
       <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" /> 
       <entity quantity="40" max_trials="15"> 
@@ -133,7 +133,16 @@
           <controller config="budong" />
         </e-puck>
       </entity> 
-    </distribute>
+    </distribute> -->
+    <!-- <distribute>
+      <position method="uniform" min="-${STARTDIM},-${STARTDIM},0" max="${STARTDIM},${STARTDIM},0" /> 
+      <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" /> 
+      <entity quantity="${WALLNUMROBOTS}" max_trials="15"> 
+        <e-puck id="wr" >
+          <controller config="budong" />
+        </e-puck>
+      </entity> 
+    </distribute> -->
     <distribute>
       <position method="uniform" min="-${STARTDIM},-${STARTDIM},0" max="${STARTDIM},${STARTDIM},0" /> 
       <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" /> 
@@ -143,6 +152,7 @@
         </e-puck>
       </entity> 
     </distribute>
+
   </arena>
 
   <!-- ******************* -->

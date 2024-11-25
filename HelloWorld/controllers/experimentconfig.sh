@@ -28,28 +28,29 @@ export CONTAINERBASE=${SWARMNAME}_eth
 
 # [ARGOS]
 # 定义机器人数量
-export NUMROBOTS=20  # 机器人数量为 50
+export NUMROBOTS=71  # 机器人数量为 50
+export WALLNUMROBOTS=2  # 墙壁机器人数量为 0
 
 # 定义控制器脚本的路径
 export CON1="${EXPERIMENTFOLDER}/controllers/main.py"  # 控制器脚本 main.py 的路径
 export CON3="${EXPERIMENTFOLDER}/controllers/main1.py"  # 控制器脚本 main.py 的路径
 
 # 定义机器人通信范围
-export RABRANGE="0.2"  # 机器人通信范围为 0.8 米
+export RABRANGE="0.3"  # 机器人通信范围为 0.8 米
 
 # 定义轮子噪声
 export WHEELNOISE="0"  # 轮子噪声为 0，表示没有噪声
 
 # 定义每秒步数
-export TPS=100  # 每秒步（帧）数为 100
+export TPS=30  # 每秒步（帧）数为 100
 
 # 定义机器人密度
 export DENSITY="1"  # 机器人密度为 1
 
 
 # 定义竞技场的尺寸
-export ARENADIM="1.7"  # 竞技场的总尺寸
-export ARENADIMH="0.85"  # 竞技场的一半尺寸
+export ARENADIM="2"  # 竞技场的总尺寸
+export ARENADIMH="1"  # 竞技场的一半尺寸
 
 # 定义实体的起始分布范围
 export STARTDIM="0.7"  # 实体起始分布的维度
@@ -80,7 +81,7 @@ export WINSIZE=5  # 窗口大小
 # [OTHER]
 export SEED=1500  # 随机种子
 export TIMELIMIT=100  # 时间限制
-export LENGTH=300  # 运行时间单位s
+export LENGTH=100  # 运行时间单位s
 export SLEEPTIME=5  # 睡眠时间
 export REPS=1  # 重复次数
 export NOTES="debug logs"  # 备注信息

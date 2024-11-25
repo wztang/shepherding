@@ -14,6 +14,8 @@ from controllers.control_params import params as cp
 #from loop_params import params as lp
 #from loop_helpers import *
 
+import math
+
 # Initialize loop function interface
 loop_function_interface = libpy_loop_function_interface.CPyLoopFunction()
 
@@ -31,18 +33,22 @@ other['countsim'] = Counter()
 # Function definitions
 def init():
     global addspacebetweenrobots
+    radius = 0.8
+    cirle_length = 2*math.pi * radius
+    wall_robot_num = math.ceil(cirle_length / 0.1)
+    print("Wall robot num: ", wall_robot_num)
+    angle = (2 * math.pi) / wall_robot_num
     for robot in allrobots:
-        addspacebetweenrobots +=0.1 #INITIALIZE robots IN DIFF PLACES-TO BE FIXED
         robot.id = int(robot.variables.get_attribute("id"))
-        #print("IN INIT FUNCTION",robot.id)
-        #SPECIFY THE ROBOT IDS TO BE OUTSIDE THE ARENA AND INACTIVE
-        #if(robot.id == 1 or robot.id ==2 or robot.id == 3 or robot.id == 4 or robot.id ==5 or robot.id ==6):
-        #f(robot.id == 1 or robot.id ==2):
-         #   loop_function_interface.AddRobotArena(0.8,0.93,0)
-        #    loop_function_interface.AddRobotArena(0.9-addspacebetweenrobots,0.93, int(robot.id)-1)
+        if robot.id <= wall_robot_num:
+            loop_function_interface.AddRobotArena(radius * math.cos(angle*(robot.id - 1)), radius * math.sin(angle*(robot.id - 1)), robot.id)
+            
+            
+        
+
     #"""
-    #byzantines = random.sample(allrobots, k=int(lp['environ']['NUMBYZANTINE']))
-    #for robot in byzantines:
+    # byzantines = random.sample(allrobots, k=int(lp['environ']['NUMBYZANTINE']))
+    # for robot in byzantines:
     #    robot.variables.set_attribute("byzantine_style", lp['environ']['BYZANTINESWARMSTYLE'])
     #    print("Making robot", robot.variables.get_attribute("id"), "Byzantine.")
     #    robot.variables.set_attribute("isByz","True")
