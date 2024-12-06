@@ -36,27 +36,6 @@
       <params script="${CON1}"
       timeRate="1" />
     </python_controller>
-    <python_controller id="budong" library="${ARGOSFOLDER}/build/libpy_controller_interface.so">
-      <!-- Normal actuator/sensor configuration follows -->
-      <actuators>
-        <epuck_rgb_leds implementation="default" medium="leds" />
-        <epuck_wheels implementation="default" noise_std_dev="0"/>
-        <epuck_range_and_bearing implementation="medium" range="${RABRANGE}"/>
-      </actuators>
-      <sensors>
-        <positioning implementation="default" />
-        <epuck_ground implementation="rot_z_only" />
-        <epuck_proximity implementation="default" show_rays="false" />
-        <epuck_range_and_bearing implementation="medium" medium="rab" show_rays="false"/>
-        <differential_steering implementation="default"/>
-      </sensors>
-      <!-- No required configuration -->
-      
-      <!-- Optionally, you can pass a script as a controller parameter: -->
-      <params script="${CON3}"
-      timeRate="1" />
-    </python_controller>
-
     <python_controller id="greedy" library="${ARGOSFOLDER}/build/libpy_controller_interface.so">
       <!-- Normal actuator/sensor configuration follows -->
       <actuators>
@@ -90,7 +69,7 @@
 
  <floor id="f" source="image" path="${EXPERIMENTFOLDER}/experiments/floors/white.png" />
 
-    <box id="wall_north" size="${ARENADIM},0.01,0.1" movable="false">
+    <!-- <box id="wall_north" size="${ARENADIM},0.01,0.1" movable="false">
       <body position="${MOVEWALL},${ARENADIMH},0" orientation="0,0,0" />
     </box>
     <box id="wall_south" size="${ARENADIM},0.01,0.1" movable="false">
@@ -101,7 +80,7 @@
     </box>
     <box id="wall_west" size="0.01,${ARENADIM},0.1" movable="false">
       <body position="-${ARENADIMH},${MOVEWALL},0" orientation="0,0,0" />
-    </box>
+    </box> -->
 
     <!-- <box id="wall_north1" size="${WALLIN_LENGTH},0.01,0.1" movable="false">
       <body position="${MOVEWALL},${WALLIN_POSITION},0" orientation="0,0,0" />

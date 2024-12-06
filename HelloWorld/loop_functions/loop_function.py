@@ -33,15 +33,15 @@ other['countsim'] = Counter()
 # Function definitions
 def init():
     global addspacebetweenrobots
-    radius = 0.8
-    cirle_length = 2*math.pi * radius
-    wall_robot_num = math.ceil(cirle_length / 0.1)
-    print("Wall robot num: ", wall_robot_num)
-    angle = (2 * math.pi) / wall_robot_num
-    for robot in allrobots:
-        robot.id = int(robot.variables.get_attribute("id"))
-        if robot.id <= wall_robot_num:
-            loop_function_interface.AddRobotArena(radius * math.cos(angle*(robot.id - 1)), radius * math.sin(angle*(robot.id - 1)), robot.id)
+    # radius = 0.8
+    # cirle_length = 2*math.pi * radius
+    # wall_robot_num = math.floor(cirle_length / 0.2)
+    # print("Wall robot num: ", wall_robot_num)
+    # angle = (2 * math.pi) / wall_robot_num
+    # for robot in allrobots:
+    #     robot.id = int(robot.variables.get_attribute("id"))
+    #     if robot.id <= wall_robot_num:
+    #         loop_function_interface.AddRobotArena(radius * math.cos(angle*(robot.id - 1)), radius * math.sin(angle*(robot.id - 1)), robot.id - 1)
             
             
         

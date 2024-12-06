@@ -164,7 +164,7 @@ global checkt
 
 def compute_total_force_and_movement(robot, robot_position, erb_peers):
     # Control parameters for movement
-    if int(me.id) <= 51:
+    if int(me.id) <= 0:
         robot.epuck_wheels.set_speed(0, 0)
         rgb.setLED(rgb.all, ['black', 'black', 'black'])
     else:
@@ -174,23 +174,24 @@ def compute_total_force_and_movement(robot, robot_position, erb_peers):
         total_F_y = 0
         K_ij = 5  # Assuming some constant value for K_ij
         L_i = 0.10 # m # Assuming some constant value for L_ij (equilibrium distance)
-        alpha = 50
-        beta = 1500
-        if int(me.id) <= 60:
-            rgb.setLED(rgb.all, ['red', 'red', 'red'])
-        elif int(me.id) <= 70:
+        alpha = 5
+        beta = 150
+        if int(me.id) <= 5:
             rgb.setLED(rgb.all, ['blue', 'blue', 'blue'])
+            V_0 = 0
+        elif int(me.id) <= 200:
+            rgb.setLED(rgb.all, ['red', 'red', 'red'])
         orientation_angle =  odo.getOrientation()  # Assuming this returns the orientation angle in degrees
         # Compute the total force from all peers
         erb_enodes = {peer.id for peer in erb.peers}
-        if me.id == "52":
-            print(f"Robot id: {me.id}, Neighbor list: {erb_enodes}")
+        # if me.id == "26":
+        #     print(f"Robot id: {me.id}, Neighbor list: {erb_enodes}")
         for peer in erb_peers:
-            if peer.id <= 51:
+            if peer.id <= 5:
+                L_j = 0.40
+            elif peer.id <= 200:
                 L_j = 0.10
-            elif peer.id <= 60:
-                L_j = 0.10
-            elif peer.id <= 70:
+            else:
                 L_j = 0.20
             L_ij = (L_i + L_j) / 2
             if peer.range < L_ij:
@@ -198,6 +199,14 @@ def compute_total_force_and_movement(robot, robot_position, erb_peers):
                 F = K_ij / L_ij * (peer.range - L_ij)
                 total_F_x +=  F * math.cos(peer.bearing + orientation_angle)
                 total_F_y += F * math.sin(peer.bearing + orientation_angle)
+
+        distance = 0.9 - (robot_position[0] ** 2 + robot_position[1] ** 2) ** 0.5
+        direction = math.atan2(robot_position[1], robot_position[0])
+        if distance < L_i:
+            F = K_ij / L_i * (distance - L_i)
+            total_F_x +=  F * math.cos(direction)
+            total_F_y += F * math.sin(direction)
+        
 
         # Calculate movement based on the total force
         force_parallel = total_F_x * math.cos(orientation_angle) + total_F_y * math.sin(orientation_angle)
@@ -212,12 +221,11 @@ def compute_total_force_and_movement(robot, robot_position, erb_peers):
 
         robot.epuck_wheels.set_speed(left_wheel_speed, right_wheel_speed)
 
-    
 
 def controlstep():
     global counter, last, pos, clocks, counters, startFlag, startTime, notdonemod, odo2, checkt, byzantine, byzantine_style, log_folder
     global estimate, totalWhite, totalBlack
-
+        
     for clock in clocks.values():
         clock.time.step()
         checkt = clock.time.time_counter
@@ -226,6 +234,7 @@ def controlstep():
         startFlag = True
         startTime = 0
         robot.log.info('--//-- Starting Experiment --//--')
+        robot.log.info(f"x y direction")
         for module in submodules:
             try:
                 module.start()
@@ -267,6 +276,7 @@ def controlstep():
         # Get the current position of the robot
         robot_position = gps.getPosition()
         compute_total_force_and_movement(robot, robot_position, erb.peers)
+        robot.log.info(f"{robot_position[0]} {robot_position[1]} {odo.getOrientation()}")
 def reset():
     pass
 

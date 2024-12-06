@@ -5,7 +5,7 @@
 
 # Arguments: (string) experiment_name/config_name
 
-source experimentconfig.sh
+source controllers/experimentconfig.sh
 
 LOGSFOLDER="$EXPERIMENTFOLDER/logs/"
 DATAFOLDER="$EXPERIMENTFOLDER/results/data/experiment_$1/"
@@ -36,7 +36,7 @@ dict_list = [(param, value) for param, value in lp.params.items() if isinstance(
 dict_list.extend([('control', cp.params)])
 
 # Collect the experiment configuration
-f = open('experimentconfig.sh', 'r')
+f = open('controllers/experimentconfig.sh', 'r')
 experimentconfig = f.read()
 experimentparams = {param:value for param,value in os.environ.items() if param in experimentconfig}
 dict_list.extend([('experiment',experimentparams)])
@@ -46,7 +46,7 @@ for name, param_dict in dict_list:
   savefile.write('%s = %s \n' % (name, repr(param_dict)))
 END
 
-cp experimentconfig.sh $LOGSFOLDER
+cp controllers/experimentconfig.sh $LOGSFOLDER
 cp $EXPERIMENTFOLDER/loop_functions/loop_params.py $LOGSFOLDER
 cp $EXPERIMENTFOLDER/controllers/control_params.py $LOGSFOLDER
 

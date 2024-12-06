@@ -6,7 +6,7 @@
   <!-- ************************* -->
   <framework>
     <system threads="1" method="balance_quantity" />
-    <experiment length="100"
+    <experiment length="30"
       ticks_per_second="30"/>
   </framework>
 
@@ -21,7 +21,7 @@
       <actuators>
         <epuck_rgb_leds implementation="default" medium="leds" />
         <epuck_wheels implementation="default" noise_std_dev="0"/>
-        <epuck_range_and_bearing implementation="medium" range="0.3"/>
+        <epuck_range_and_bearing implementation="medium" range="0.8"/>
       </actuators>
       <sensors>
         <positioning implementation="default" />
@@ -36,33 +36,12 @@
       <params script="/home/twz//Desktop/ARGoS/shepherding/HelloWorld/controllers/main.py"
       timeRate="1" />
     </python_controller>
-    <python_controller id="budong" library="/home/twz//Desktop/ARGoS/shepherding/argos-python/build/libpy_controller_interface.so">
-      <!-- Normal actuator/sensor configuration follows -->
-      <actuators>
-        <epuck_rgb_leds implementation="default" medium="leds" />
-        <epuck_wheels implementation="default" noise_std_dev="0"/>
-        <epuck_range_and_bearing implementation="medium" range="0.3"/>
-      </actuators>
-      <sensors>
-        <positioning implementation="default" />
-        <epuck_ground implementation="rot_z_only" />
-        <epuck_proximity implementation="default" show_rays="false" />
-        <epuck_range_and_bearing implementation="medium" medium="rab" show_rays="false"/>
-        <differential_steering implementation="default"/>
-      </sensors>
-      <!-- No required configuration -->
-      
-      <!-- Optionally, you can pass a script as a controller parameter: -->
-      <params script="/home/twz//Desktop/ARGoS/shepherding/HelloWorld/controllers/main1.py"
-      timeRate="1" />
-    </python_controller>
-
     <python_controller id="greedy" library="/home/twz//Desktop/ARGoS/shepherding/argos-python/build/libpy_controller_interface.so">
       <!-- Normal actuator/sensor configuration follows -->
       <actuators>
         <epuck_rgb_leds implementation="default" medium="leds" />
         <epuck_wheels implementation="default" />
-        <epuck_range_and_bearing implementation="medium" range="0.3"/>
+        <epuck_range_and_bearing implementation="medium" range="0.8"/>
       </actuators>
       <sensors>
         <positioning implementation="default" />
@@ -90,7 +69,7 @@
 
  <floor id="f" source="image" path="/home/twz//Desktop/ARGoS/shepherding/HelloWorld/experiments/floors/white.png" />
 
-    <box id="wall_north" size="2,0.01,0.1" movable="false">
+    <!-- <box id="wall_north" size="2,0.01,0.1" movable="false">
       <body position="0.0,1,0" orientation="0,0,0" />
     </box>
     <box id="wall_south" size="2,0.01,0.1" movable="false">
@@ -101,7 +80,7 @@
     </box>
     <box id="wall_west" size="0.01,2,0.1" movable="false">
       <body position="-1,0.0,0" orientation="0,0,0" />
-    </box>
+    </box> -->
 
     <!-- <box id="wall_north1" size=",0.01,0.1" movable="false">
       <body position="0.0,,0" orientation="0,0,0" />
@@ -135,18 +114,18 @@
       </entity> 
     </distribute> -->
     <!-- <distribute>
-      <position method="uniform" min="-0.7,-0.7,0" max="0.7,0.7,0" /> 
+      <position method="uniform" min="-0.8,-0.8,0" max="0.8,0.8,0" /> 
       <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" /> 
-      <entity quantity="2" max_trials="15"> 
+      <entity quantity="" max_trials="15"> 
         <e-puck id="wr" >
           <controller config="budong" />
         </e-puck>
       </entity> 
     </distribute> -->
     <distribute>
-      <position method="uniform" min="-0.7,-0.7,0" max="0.7,0.7,0" /> 
+      <position method="uniform" min="-0.8,-0.8,0" max="0.8,0.8,0" /> 
       <orientation method="gaussian" mean="0,0,0" std_dev="360,0,0" /> 
-      <entity quantity="71" max_trials="15"> 
+      <entity quantity="60" max_trials="15"> 
         <e-puck id="bc" >
           <controller config="collab" />
         </e-puck>

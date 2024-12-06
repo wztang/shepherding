@@ -1,0 +1,104 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "pythonwrapper",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "py_controller_interface::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-py_controller_interface-Debug-9db1651083f6bd0d828f.json",
+					"name" : "py_controller_interface",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "py_controller_interface_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-py_controller_interface_autogen-Debug-572c90ad2da74374ec52.json",
+					"name" : "py_controller_interface_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "py_loop_function_interface::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-py_loop_function_interface-Debug-2d6563e3cba60ce363a4.json",
+					"name" : "py_loop_function_interface",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "py_loop_function_interface_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-py_loop_function_interface_autogen-Debug-cc91a1be2177149ae1d4.json",
+					"name" : "py_loop_function_interface_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "py_qtuser_function_interface::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-py_qtuser_function_interface-Debug-a0ae36fedd0fc6e23dd3.json",
+					"name" : "py_qtuser_function_interface",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "py_qtuser_function_interface_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-py_qtuser_function_interface_autogen-Debug-762c751709d7a6e72819.json",
+					"name" : "py_qtuser_function_interface_autogen",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/twz/Desktop/ARGoS/shepherding/build",
+		"source" : "/home/twz/Desktop/ARGoS/shepherding/argos-python"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 0
+	}
+}

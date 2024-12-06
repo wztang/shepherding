@@ -27,8 +27,8 @@ export SWARMNAME=ethereum
 export CONTAINERBASE=${SWARMNAME}_eth
 
 # [ARGOS]
-export NUMROBOTS=
-export CON1="${EXPERIMENTFOLDER}/controllers/main.py"
+export NUMROBOTS=10
+export CON1="${EXPERIMENTFOLDER}/main.py"
 
 
 export RABRANGE="0.5"
@@ -68,9 +68,9 @@ export WINSIZE=5
 # [OTHER]
 export SEED=1300
 export TIMELIMIT=100
-export LENGTH=5000
+export LENGTH=30
 export SLEEPTIME=5
-export REPS=5
+export REPS=1
 export NOTES="Variation of utility of the resource between 100 and 400"
 
 

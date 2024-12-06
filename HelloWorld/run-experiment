@@ -1,6 +1,6 @@
 #!/bin/bash
 # Iterate over experimental settings and start experiments
-source experimentconfig.sh
+source controllers/experimentconfig.sh
 
 DATAFOLDER="$EXPERIMENTFOLDER/results/data"
 
@@ -9,7 +9,7 @@ DATAFOLDER="$EXPERIMENTFOLDER/results/data"
 ### USAGE:   config "parameter" value
 ### EXAMPLE: config "NUMROBOTS" 10 
 config() {
-	sed -i "s/^export ${1}=.*/export ${1}=${2}/" experimentconfig.sh
+	sed -i "s/^export ${1}=.*/export ${1}=${2}/" controllers/experimentconfig.sh
 }
 
 ##################################################################################
@@ -26,7 +26,7 @@ loopconfig() {
 ### EXAMPLE: copy "test116_patchy/20_blockchain1"
 copy() {
 	# Collect the config from results
-	cp $DATAFOLDER/experiment_${1}/001/experimentconfig.sh .
+	cp $DATAFOLDER/experiment_${1}/001/controllers/experimentconfig.sh .
 	cp $DATAFOLDER/experiment_${1}/001/controller_params.py controllers/
 	cp $DATAFOLDER/experiment_${1}/001/loop_function_params.py loop_functions/
 }
@@ -41,7 +41,7 @@ import() {
 	SSHSOCKET=~/.ssh/$SSHHOST
 	
 	ssh -M -f -N -o ControlPath=$SSHSOCKET $SSHHOST
-	scp -o ControlPath=$SSHSOCKET $SSHHOST:$DATAFOLDER/experiment_${1}/001/experimentconfig.sh .
+	scp -o ControlPath=$SSHSOCKET $SSHHOST:$DATAFOLDER/experiment_${1}/001/controllers/experimentconfig.sh .
 	scp -o ControlPath=$SSHSOCKET $SSHHOST:$DATAFOLDER/experiment_${1}/001/controller_params.py controllers/
 	scp -o ControlPath=$SSHSOCKET $SSHHOST:$DATAFOLDER/experiment_${1}/001/loop_function_params.py loop_functions/
 	ssh -S $SSHSOCKET -O exit $SSHHOST
@@ -54,7 +54,7 @@ import() {
 run() {
 
 	# Configure experiment
-	. experimentconfig.sh
+	. controllers/experimentconfig.sh
 
 	# If is a testrun
 	if  [[ $2 = "--test" || $2 = "-t" ]]; then
@@ -79,16 +79,16 @@ run() {
 
 
 # DEFINE EXPERIMENT
-EXP=varyutil2
-config "REPS" 5
-config "LENGTH" 5000
+EXP=ae
+config "REPS" 1
+config "LENGTH" 30
 config "NOTES" "\"Variation of utility of the resource between 100 and 400\""
 
-for UTIL in $(seq 100 50 400); do 
-	CFG=${UTIL}
-	loopconfig "patches" "utility" "{'red': 1, 'green':  1, 'blue': ${UTIL}, 'yellow': 1}"
+for NR in $(seq 20 20 60); do 
+	config "NUMROBOTS" ${NR}
+	# loopconfig "patches" "utility" "{'red': 1, 'green':  1, 'blue': ${UTIL}, 'yellow': 1}"
 	wait
-	run    "${EXP}/${CFG}"
+	run    "${EXP}/${NR}"
 done
 
 
