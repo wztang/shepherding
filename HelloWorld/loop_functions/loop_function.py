@@ -58,12 +58,20 @@ def pre_step():
     global startFlag, startTime
     if not startFlag:
         startTime = 0
+    robotsDirection = dict()
+    for robot in allrobots:
+        robot.id = robot.variables.get_attribute("id")
+        robotsDirection[robot.id] = robot.position.get_orientation()
+    # 将字典转换为JSON字符串
+    robotsDirection_str = json.dumps(robotsDirection)
+    for robot in allrobots:
+        robot.variables.set_attribute("neighbor_direction", robotsDirection_str)
     """
-    if other['countsim'].count == 0:
+    if other['countsim'].count == 5:
         try:
-            loop_function_interface.AddRobotArena(0.8, 0.93, 0)
-            loop_function_interface.AddRobotArena(0.9, 0.93, 1)
-            loop_function_interface.AddRobotArena(0.7, 0.93, 2)
+            loop_function_interface.AddRobotArena(-0.5, 0.0, 0)
+            loop_function_interface.AddRobotArena(0.5, 0.0, 1)
+            loop_function_interface.AddRobotArena(-0.5, 0.0, 2)
             loop_function_interface.AddRobotArena(0.6, 0.93, 3)
 
 

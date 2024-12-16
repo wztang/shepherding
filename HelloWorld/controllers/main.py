@@ -39,7 +39,6 @@ txList, tripList, submodules = [], [], []
 global clocks, counters, logs, txs
 clocks, counters, logs, txs = dict(), dict(), dict(), dict()
 
-
 global estimate, totalWhite, totalBlack, byzantine, byzantine_style, log_folder
 TPS = 5000
 
@@ -163,6 +162,9 @@ global checkt
 
 
 def compute_total_force_and_movement(robot, robot_position, erb_peers):
+    # 将JSON字符串转换回字典
+    robotsDirection_dict = json.loads(robot.variables.get_attribute("neighbor_direction"))
+    # print(robotsDirection_dict)
     # Control parameters for movement
     if int(me.id) <= 0:
         robot.epuck_wheels.set_speed(0, 0)
@@ -176,7 +178,7 @@ def compute_total_force_and_movement(robot, robot_position, erb_peers):
         L_i = 0.10 # m # Assuming some constant value for L_ij (equilibrium distance)
         alpha = 5
         beta = 150
-        if int(me.id) <= 5:
+        if int(me.id) <= 0:
             rgb.setLED(rgb.all, ['blue', 'blue', 'blue'])
             V_0 = 0
         elif int(me.id) <= 200:
@@ -187,7 +189,7 @@ def compute_total_force_and_movement(robot, robot_position, erb_peers):
         # if me.id == "26":
         #     print(f"Robot id: {me.id}, Neighbor list: {erb_enodes}")
         for peer in erb_peers:
-            if peer.id <= 5:
+            if peer.id <= 0:
                 L_j = 0.40
             elif peer.id <= 200:
                 L_j = 0.10
@@ -195,6 +197,7 @@ def compute_total_force_and_movement(robot, robot_position, erb_peers):
                 L_j = 0.20
             L_ij = (L_i + L_j) / 2
             if peer.range < L_ij:
+                # print(robotsDirection_dict[f"{peer.id}"])
                 # Force contribution from this peer
                 F = K_ij / L_ij * (peer.range - L_ij)
                 total_F_x +=  F * math.cos(peer.bearing + orientation_angle)
