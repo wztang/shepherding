@@ -28,7 +28,7 @@ export CONTAINERBASE=${SWARMNAME}_eth
 
 # [ARGOS]
 # 定义机器人数量
-export NUMROBOTS=60
+export NUMROBOTS=2
 
 # 定义控制器脚本的路径
 export CON1="${EXPERIMENTFOLDER}/controllers/main.py"  # 控制器脚本 main.py 的路径

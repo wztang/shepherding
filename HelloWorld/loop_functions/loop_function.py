@@ -33,39 +33,31 @@ other['countsim'] = Counter()
 # Function definitions
 def init():
     global addspacebetweenrobots
-    # radius = 0.8
-    # cirle_length = 2*math.pi * radius
-    # wall_robot_num = math.floor(cirle_length / 0.2)
-    # print("Wall robot num: ", wall_robot_num)
-    # angle = (2 * math.pi) / wall_robot_num
-    # for robot in allrobots:
-    #     robot.id = int(robot.variables.get_attribute("id"))
-    #     if robot.id <= wall_robot_num:
-    #         loop_function_interface.AddRobotArena(radius * math.cos(angle*(robot.id - 1)), radius * math.sin(angle*(robot.id - 1)), robot.id - 1)
-            
-            
-        
+    for robot in allrobots:
+        robot.id = robot.variables.get_attribute("id")
+        robot.variables.set_attribute("K", 5)
+        robot.variables.set_attribute("alpha", 5)
+        robot.variables.set_attribute("beta", 150)
+        if robot.id <= 0:
+            robot.variables.set_attribute("V_0", 3)
+            robot.variables.set_attribute("L", 0.1)
+            robot.variables.set_attribute("R_rate", 0.03)
 
-    #"""
-    # byzantines = random.sample(allrobots, k=int(lp['environ']['NUMBYZANTINE']))
-    # for robot in byzantines:
-    #    robot.variables.set_attribute("byzantine_style", lp['environ']['BYZANTINESWARMSTYLE'])
-    #    print("Making robot", robot.variables.get_attribute("id"), "Byzantine.")
-    #    robot.variables.set_attribute("isByz","True")
-    #"""
+            
 
 def pre_step():
     global startFlag, startTime
     if not startFlag:
         startTime = 0
-    robotsDirection = dict()
+    inherent_properties = dict()
     for robot in allrobots:
         robot.id = robot.variables.get_attribute("id")
-        robotsDirection[robot.id] = robot.position.get_orientation()
+        inherent_properties[robot.id] = robot.position.get_orientation()
+        inherent_properties[robot.id] = {"L": robot.variables.get_attribute("L"), "R_rate": robot.variables.get_attribute("R_rate"), "V_0": robot.variables.get_attribute("V_0"),"direction": robot.position.get_orientation()}
     # 将字典转换为JSON字符串
-    robotsDirection_str = json.dumps(robotsDirection)
+    inherent_properties_str = json.dumps(inherent_properties)
     for robot in allrobots:
-        robot.variables.set_attribute("neighbor_direction", robotsDirection_str)
+        robot.variables.set_attribute("inherent_properties", inherent_properties_str)
     """
     if other['countsim'].count == 5:
         try:

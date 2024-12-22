@@ -162,67 +162,64 @@ global checkt
 
 
 def compute_total_force_and_movement(robot, robot_position, erb_peers):
+    # Compute the total force from all peers
+    erb_enodes = {peer.id for peer in erb.peers}
     # 将JSON字符串转换回字典
-    robotsDirection_dict = json.loads(robot.variables.get_attribute("neighbor_direction"))
-    # print(robotsDirection_dict)
-    # Control parameters for movement
-    if int(me.id) <= 0:
-        robot.epuck_wheels.set_speed(0, 0)
-        rgb.setLED(rgb.all, ['black', 'black', 'black'])
-    else:
-        V_0 = 3 # cm/s
-        robot_width = 0.07
-        total_F_x = 0
-        total_F_y = 0
-        K_ij = 5  # Assuming some constant value for K_ij
-        L_i = 0.10 # m # Assuming some constant value for L_ij (equilibrium distance)
-        alpha = 5
-        beta = 150
-        if int(me.id) <= 0:
-            rgb.setLED(rgb.all, ['blue', 'blue', 'blue'])
-            V_0 = 0
-        elif int(me.id) <= 200:
-            rgb.setLED(rgb.all, ['red', 'red', 'red'])
-        orientation_angle =  odo.getOrientation()  # Assuming this returns the orientation angle in degrees
-        # Compute the total force from all peers
-        erb_enodes = {peer.id for peer in erb.peers}
-        # if me.id == "26":
-        #     print(f"Robot id: {me.id}, Neighbor list: {erb_enodes}")
-        for peer in erb_peers:
-            if peer.id <= 0:
-                L_j = 0.40
-            elif peer.id <= 200:
-                L_j = 0.10
-            else:
-                L_j = 0.20
-            L_ij = (L_i + L_j) / 2
-            if peer.range < L_ij:
-                # print(robotsDirection_dict[f"{peer.id}"])
-                # Force contribution from this peer
-                F = K_ij / L_ij * (peer.range - L_ij)
-                total_F_x +=  F * math.cos(peer.bearing + orientation_angle)
-                total_F_y += F * math.sin(peer.bearing + orientation_angle)
+    inherent_properties = json.loads(robot.variables.get_attribute("inherent_properties"))
+    robot_width = 0.07 # Assuming some constant value for robot width
+    K_ij = robot.variables.get_attribute("K")  # Assuming some constant value for K_ij
+    alpha = robot.variables.get_attribute("alpha") # Assuming some constant value for alpha
+    beta = robot.variables.get_attribute("beta") # Assuming some constant value for beta
+    V_0 = robot.variables.get_attribute("V_0") # cm/s
+    L_i = robot.variables.get_attribute("L") # m # Assuming some constant value for L_ij (equilibrium distance)
+    R_i = L_i * robot.variables.get_attribute("R_rate")
+    orientation_angle_i =  odo.getOrientation()  # Assuming this returns the orientation angle in degrees
+    motion_position_i = robot_position
+    geometric_position_i = robot_position + [R_i * math.cos(orientation_angle_i), R_i * math.sin(orientation_angle_i)]
+    total_F_x = 0
+    total_F_y = 0
 
-        distance = 0.9 - (robot_position[0] ** 2 + robot_position[1] ** 2) ** 0.5
-        direction = math.atan2(robot_position[1], robot_position[0])
-        if distance < L_i:
-            F = K_ij / L_i * (distance - L_i)
-            total_F_x +=  F * math.cos(direction)
-            total_F_y += F * math.sin(direction)
-        
+    # # Control parameters for movement
+    # if int(me.id) <= 0:
+    #     robot.epuck_wheels.set_speed(0, 0)
+    #     rgb.setLED(rgb.all, ['black', 'black', 'black'])
+    # elif int(me.id) <= 0:
+    #     rgb.setLED(rgb.all, ['blue', 'blue', 'blue'])
+    #     V_0 = 0
+    # else:
+    #     rgb.setLED(rgb.all, ['red', 'red', 'red'])
 
-        # Calculate movement based on the total force
-        force_parallel = total_F_x * math.cos(orientation_angle) + total_F_y * math.sin(orientation_angle)
-        force_perpendicular = -total_F_x * math.sin(orientation_angle) + total_F_y * math.cos(orientation_angle)
-        
-        v_t = (V_0 + alpha * force_parallel)
-        w_t = (beta * force_perpendicular)
-        
-        # Calculate wheel speeds
-        left_wheel_speed = (v_t - robot_width * w_t / 2) 
-        right_wheel_speed = (v_t + robot_width * w_t / 2)
+    for peer in erb_peers:
+        inherent_properties[f"{peer.id}"] = json.loads(peer.variables.get_attribute("inherent_properties"))
+        print(inherent_properties[f"{peer.id}"])
+    #     L_ij = (L_i + L_j) / 2
+    #     if peer.range < L_ij:
+    #         # print(robotsDirection_dict[f"{peer.id}"])
+    #         # Force contribution from this peer
+    #         F = K_ij / L_ij * (peer.range - L_ij)
+    #         total_F_x +=  F * math.cos(peer.bearing + orientation_angle_i)
+    #         total_F_y += F * math.sin(peer.bearing + orientation_angle_i)
+            
+    # # Compute the total force from the boundary
+    # boundary_distance = 0.9 - (robot_position[0] ** 2 + robot_position[1] ** 2) ** 0.5
+    # direction = math.atan2(robot_position[1], robot_position[0])
+    # if boundary_distance < L_i:
+    #     F = K_ij / L_i * (boundary_distance - L_i)
+    #     total_F_x +=  F * math.cos(direction)
+    #     total_F_y += F * math.sin(direction)
+    
+    # # Calculate movement based on the total force
+    # force_parallel = total_F_x * math.cos(orientation_angle_i) + total_F_y * math.sin(orientation_angle_i)
+    # force_perpendicular = -total_F_x * math.sin(orientation_angle_i) + total_F_y * math.cos(orientation_angle_i)
+    
+    # v_t = (V_0 + alpha * force_parallel)
+    # w_t = (beta * force_perpendicular)
+    
+    # # Calculate wheel speeds
+    # left_wheel_speed = (v_t - robot_width * w_t / 2) 
+    # right_wheel_speed = (v_t + robot_width * w_t / 2)
 
-        robot.epuck_wheels.set_speed(left_wheel_speed, right_wheel_speed)
+    # robot.epuck_wheels.set_speed(left_wheel_speed, right_wheel_speed)
 
 
 def controlstep():

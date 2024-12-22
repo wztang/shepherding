@@ -16,7 +16,7 @@
   <controllers>
 
    
-    <python_controller id="collab" library="/home/twz//Desktop/ARGoS/shepherding/argos-python/build/libpy_controller_interface.so">
+    <python_controller id="collab" library="/home/argos_twz//Desktop/ARGoS/shepherding/argos-python/build/libpy_controller_interface.so">
       <!-- Normal actuator/sensor configuration follows -->
       <actuators>
         <epuck_rgb_leds implementation="default" medium="leds" />
@@ -33,10 +33,10 @@
       <!-- No required configuration -->
       
       <!-- Optionally, you can pass a script as a controller parameter: -->
-      <params script="/home/twz//Desktop/ARGoS/shepherding/HelloWorld/controllers/main.py"
+      <params script="/home/argos_twz//Desktop/ARGoS/shepherding/HelloWorld/controllers/main.py"
       timeRate="1" />
     </python_controller>
-    <python_controller id="greedy" library="/home/twz//Desktop/ARGoS/shepherding/argos-python/build/libpy_controller_interface.so">
+    <python_controller id="greedy" library="/home/argos_twz//Desktop/ARGoS/shepherding/argos-python/build/libpy_controller_interface.so">
       <!-- Normal actuator/sensor configuration follows -->
       <actuators>
         <epuck_rgb_leds implementation="default" medium="leds" />
@@ -56,9 +56,9 @@
       timeRate="1" />
     </python_controller>
   </controllers>
-    <loop_functions library="/home/twz//Desktop/ARGoS/shepherding/argos-python/build/libpy_loop_function_interface.so"
+    <loop_functions library="/home/argos_twz//Desktop/ARGoS/shepherding/argos-python/build/libpy_loop_function_interface.so"
                   label="py_loop_function">
-    <params script="/home/twz//Desktop/ARGoS/shepherding/HelloWorld/loop_functions/loop_function.py"/>
+    <params script="/home/argos_twz//Desktop/ARGoS/shepherding/HelloWorld/loop_functions/loop_function.py"/>
   </loop_functions>
 
 
@@ -67,7 +67,7 @@
   <!-- *********************** -->
   <arena size="2, 2, 1.5" center="0,0,0">
 
- <floor id="f" source="image" path="/home/twz//Desktop/ARGoS/shepherding/HelloWorld/experiments/floors/white.png" />
+ <floor id="f" source="image" path="/home/argos_twz//Desktop/ARGoS/shepherding/HelloWorld/experiments/floors/white.png" />
 
     <!-- <box id="wall_north" size="2,0.01,0.1" movable="false">
       <body position="0.0,1,0" orientation="0,0,0" />
@@ -159,9 +159,9 @@
     <!-- ************************************************************************ -->
   <!-- <qt-opengl autoplay="true"> -->
     <qt-opengl autoplay="false">
-<!--       <user_functions library="/home/twz//Desktop/ARGoS/shepherding/argos-python/build/libpy_qtuser_function_interface.so"
+<!--       <user_functions library="/home/argos_twz//Desktop/ARGoS/shepherding/argos-python/build/libpy_qtuser_function_interface.so"
                       label="py_qtuser_function" >
-      <params script="/home/twz//Desktop/ARGoS/shepherding/HelloWorld/loop_functions/qtuser_function.py"/>
+      <params script="/home/argos_twz//Desktop/ARGoS/shepherding/HelloWorld/loop_functions/qtuser_function.py"/>
       </user_functions> -->
       
     <camera>
