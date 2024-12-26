@@ -28,7 +28,7 @@ export CONTAINERBASE=${SWARMNAME}_eth
 
 # [ARGOS]
 # 定义机器人数量
-export NUMROBOTS=2
+export NUMROBOTS=10
 
 # 定义控制器脚本的路径
 export CON1="${EXPERIMENTFOLDER}/controllers/main.py"  # 控制器脚本 main.py 的路径
@@ -48,9 +48,9 @@ export DENSITY="1"  # 机器人密度为 1
 
 
 # 定义竞技场的尺寸
-export ARENADIM="2"  # 竞技场的总尺寸
-export ARENADIMH="1"  # 竞技场的一半尺寸
-
+export ARENADIM="2.2"  # 竞技场的总尺寸
+export ARENADIMH="1.1"  # 竞技场的一半尺寸
+export ARENA_RADIUS = 1.05 # 竞技场motion的半径
 # 定义实体的起始分布范围
 export STARTDIM="0.8"  # 实体起始分布的维度
 
@@ -80,7 +80,7 @@ export WINSIZE=5  # 窗口大小
 # [OTHER]
 export SEED=1500  # 随机种子
 export TIMELIMIT=100  # 时间限制
-export LENGTH=30
+export LENGTH=10000
 export SLEEPTIME=5  # 睡眠时间
 export REPS=1
 export NOTES="Variation of utility of the resource between 100 and 400"

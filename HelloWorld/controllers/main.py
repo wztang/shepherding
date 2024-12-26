@@ -167,15 +167,15 @@ def compute_total_force_and_movement(robot, robot_position, erb_peers):
     # 将JSON字符串转换回字典
     inherent_properties = json.loads(robot.variables.get_attribute("inherent_properties"))
     robot_width = 0.07 # Assuming some constant value for robot width
-    K_ij = robot.variables.get_attribute("K")  # Assuming some constant value for K_ij
-    alpha = robot.variables.get_attribute("alpha") # Assuming some constant value for alpha
-    beta = robot.variables.get_attribute("beta") # Assuming some constant value for beta
-    V_0 = robot.variables.get_attribute("V_0") # cm/s
-    L_i = robot.variables.get_attribute("L") # m # Assuming some constant value for L_ij (equilibrium distance)
-    R_i = L_i * robot.variables.get_attribute("R_rate")
+    K_ij = float(robot.variables.get_attribute("K"))  # Assuming some constant value for K_ij
+    alpha = float(robot.variables.get_attribute("alpha")) # Assuming some constant value for alpha
+    beta = float(robot.variables.get_attribute("beta")) # Assuming some constant value for beta
+    V_0 = float(robot.variables.get_attribute("V_0")) # cm/s
+    L_i = float(robot.variables.get_attribute("L")) # m # Assuming some constant value for L_ij (equilibrium distance)
+    R_i = L_i * float(robot.variables.get_attribute("R_rate"))
     orientation_angle_i =  odo.getOrientation()  # Assuming this returns the orientation angle in degrees
     motion_position_i = robot_position
-    geometric_position_i = robot_position + [R_i * math.cos(orientation_angle_i), R_i * math.sin(orientation_angle_i)]
+    geometric_position_i = [motion_position_i[0] + R_i * math.cos(orientation_angle_i), motion_position_i[1] + R_i * math.sin(orientation_angle_i)]
     total_F_x = 0
     total_F_y = 0
 
@@ -190,36 +190,53 @@ def compute_total_force_and_movement(robot, robot_position, erb_peers):
     #     rgb.setLED(rgb.all, ['red', 'red', 'red'])
 
     for peer in erb_peers:
-        inherent_properties[f"{peer.id}"] = json.loads(peer.variables.get_attribute("inherent_properties"))
-        print(inherent_properties[f"{peer.id}"])
-    #     L_ij = (L_i + L_j) / 2
-    #     if peer.range < L_ij:
-    #         # print(robotsDirection_dict[f"{peer.id}"])
-    #         # Force contribution from this peer
-    #         F = K_ij / L_ij * (peer.range - L_ij)
-    #         total_F_x +=  F * math.cos(peer.bearing + orientation_angle_i)
-    #         total_F_y += F * math.sin(peer.bearing + orientation_angle_i)
+        L_j = float(inherent_properties[f"{peer.id}"]["L"])
+        R_j = L_j * float(inherent_properties[f"{peer.id}"]["R_rate"])
+        orientation_angle_j = float(inherent_properties[f"{peer.id}"]["direction"])
+        motion_position_j = [motion_position_i[0] + peer.range*math.cos(peer.bearing+orientation_angle_i), motion_position_i[1] + peer.range*math.sin(peer.bearing+orientation_angle_i)]
+        geometric_position_j = [motion_position_j[0] + R_j*math.cos(orientation_angle_j), motion_position_j[1] + R_j*math.sin(orientation_angle_j)]
+        L_ij = (L_i + L_j) / 2
+        geometric_x = geometric_position_j[0]-geometric_position_i[0]
+        geometric_y = geometric_position_j[1]-geometric_position_i[1]
+        geometric_distance = (geometric_x**2 + geometric_y**2)**0.5
+        geometric_direction = math.atan2(geometric_y,geometric_x)
+        # if me.id == "2" and peer.id == 1:
+        # print("")
+        # print(f"id:{me.id},direction:{orientation_angle_i:.6f},motion_position:({motion_position_i[0]:.6f},{motion_position_i[1]:.6f}),geometric_position:({geometric_position_i[0]:.6f},{geometric_position_i[1]:.6f})")
+        # print(f"N_id:{peer.id},direction:{orientation_angle_j:.6f},motion_position:({motion_position_j[0]:.6f},{motion_position_j[1]:.6f}),geometric_position:({geometric_position_j[0]:.6f},{geometric_position_j[1]:.6f})")     
+        # print(f"L:{L_ij}")  
+        # print(f"peer:distance:{peer.range:.6f},        bearing  :{peer.bearing+orientation_angle_i:.6f},(x,y):({peer.range*math.cos(peer.bearing+orientation_angle_i):.6f},{peer.range*math.sin(peer.bearing+orientation_angle_i):.6f})")  
+        # print(f"cau :distance:{geometric_distance:.6f},direction:{geometric_direction:.6f},(x,y):({geometric_x:.6f},{geometric_y:.6f})")
+        if geometric_distance < L_ij:
+            # Force contribution from this peer
+            F = K_ij / L_ij * (geometric_distance - L_ij)
+            total_F_x +=  F * math.cos(geometric_direction)
+            total_F_y += F * math.sin(geometric_direction)
+            # if me.id == "2" and peer.id == 1:
+            # print(f"F:{F},cos:{math.cos(geometric_direction)},sin:{math.sin(geometric_direction)}")
             
-    # # Compute the total force from the boundary
-    # boundary_distance = 0.9 - (robot_position[0] ** 2 + robot_position[1] ** 2) ** 0.5
-    # direction = math.atan2(robot_position[1], robot_position[0])
-    # if boundary_distance < L_i:
-    #     F = K_ij / L_i * (boundary_distance - L_i)
-    #     total_F_x +=  F * math.cos(direction)
-    #     total_F_y += F * math.sin(direction)
+    # Compute the total force from the boundary
+    boundary_distance = cp['arena']['radius'] - (geometric_position_i[0] ** 2 + geometric_position_i[1] ** 2) ** 0.5
+    boundary_direction = math.atan2(geometric_position_i[1], geometric_position_i[0])
+    if boundary_distance < L_i:
+        F = K_ij / L_i * (boundary_distance - L_i)
+        total_F_x +=  F * math.cos(boundary_direction)
+        total_F_y += F * math.sin(boundary_direction)
     
-    # # Calculate movement based on the total force
-    # force_parallel = total_F_x * math.cos(orientation_angle_i) + total_F_y * math.sin(orientation_angle_i)
-    # force_perpendicular = -total_F_x * math.sin(orientation_angle_i) + total_F_y * math.cos(orientation_angle_i)
+    # Calculate movement based on the total force
+    force_parallel = total_F_x * math.cos(orientation_angle_i) + total_F_y * math.sin(orientation_angle_i)
+    force_perpendicular = -total_F_x * math.sin(orientation_angle_i) + total_F_y * math.cos(orientation_angle_i)
     
-    # v_t = (V_0 + alpha * force_parallel)
-    # w_t = (beta * force_perpendicular)
+    v_t = (V_0 + alpha * force_parallel)
+    w_t = (beta * force_perpendicular)
     
-    # # Calculate wheel speeds
-    # left_wheel_speed = (v_t - robot_width * w_t / 2) 
-    # right_wheel_speed = (v_t + robot_width * w_t / 2)
-
-    # robot.epuck_wheels.set_speed(left_wheel_speed, right_wheel_speed)
+    # Calculate wheel speeds
+    left_wheel_speed = (v_t - robot_width * w_t / 2) 
+    right_wheel_speed = (v_t + robot_width * w_t / 2)
+    # if me.id == "2":
+    # print(f"id:{me.id},force:({total_F_x},{total_F_y})({force_parallel},{force_perpendicular}),v:{v_t},w_t:{w_t}")
+    # print(f"{me.id},{orientation_angle_i}, ({robot_position[0]},{robot_position[1]}),({motion_position_i[0]},{motion_position_i[1]}),({geometric_position_i[0]},{geometric_position_i[1]})" )
+    robot.epuck_wheels.set_speed(left_wheel_speed, right_wheel_speed)
 
 
 def controlstep():
@@ -234,7 +251,15 @@ def controlstep():
         startFlag = True
         startTime = 0
         robot.log.info('--//-- Starting Experiment --//--')
-        robot.log.info(f"x y direction")
+        robot.log.info(f"K alpha beta V_0 L R_rate")
+        K = float(robot.variables.get_attribute("K"))
+        alpha = float(robot.variables.get_attribute("alpha"))
+        beta = float(robot.variables.get_attribute("beta"))
+        V_0 = float(robot.variables.get_attribute("V_0"))
+        L = float(robot.variables.get_attribute("L"))
+        R_rate = float(robot.variables.get_attribute("R_rate"))
+        robot.log.info(f"{K} {alpha} {beta} {V_0} {L} {R_rate}")
+        robot.log.info(f"motion_x motion_y direction")
         for module in submodules:
             try:
                 module.start()
@@ -277,6 +302,7 @@ def controlstep():
         robot_position = gps.getPosition()
         compute_total_force_and_movement(robot, robot_position, erb.peers)
         robot.log.info(f"{robot_position[0]} {robot_position[1]} {odo.getOrientation()}")
+
 def reset():
     pass
 

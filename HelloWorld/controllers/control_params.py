@@ -17,3 +17,6 @@ params['max_Q']       = 10
 
 params['firm'] = dict()
 params['firm']['entry_K']     = 5
+
+params['arena'] = dict()
+params['arena']['radius'] = 1.05

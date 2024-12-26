@@ -79,16 +79,16 @@ run() {
 
 
 # DEFINE EXPERIMENT
-EXP=ae
+EXP=ae_R=0.03
 config "REPS" 1
-config "LENGTH" 30
+config "LENGTH" 10000
 config "NOTES" "\"Variation of utility of the resource between 100 and 400\""
 
-for NR in $(seq 20 20 60); do 
+for NR in $(seq 20 20 100); do
 	config "NUMROBOTS" ${NR}
 	# loopconfig "patches" "utility" "{'red': 1, 'green':  1, 'blue': ${UTIL}, 'yellow': 1}"
 	wait
-	run    "${EXP}/${NR}"
+	run    "${EXP}/k${NR}"
 done
 
 

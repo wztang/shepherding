@@ -35,15 +35,17 @@ def init():
     global addspacebetweenrobots
     for robot in allrobots:
         robot.id = robot.variables.get_attribute("id")
-        robot.variables.set_attribute("K", 5)
-        robot.variables.set_attribute("alpha", 5)
-        robot.variables.set_attribute("beta", 150)
-        if robot.id <= 0:
-            robot.variables.set_attribute("V_0", 3)
-            robot.variables.set_attribute("L", 0.1)
-            robot.variables.set_attribute("R_rate", 0.03)
-
-            
+        robot.variables.set_attribute("K", "5")
+        robot.variables.set_attribute("alpha", "5")
+        robot.variables.set_attribute("beta", "150")
+        if int(robot.id) <= 0:
+            robot.variables.set_attribute("V_0", "0")
+            robot.variables.set_attribute("L", "0.1")
+            robot.variables.set_attribute("R_rate", "0.0")
+        else:
+            robot.variables.set_attribute("V_0", "3")
+            robot.variables.set_attribute("L", "0.2")
+            robot.variables.set_attribute("R_rate", "0.03")
 
 def pre_step():
     global startFlag, startTime
